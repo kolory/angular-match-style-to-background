@@ -1,6 +1,6 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing'
-import {Component, DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
+import {Component, DebugElement} from '@angular/core'
+import {By} from '@angular/platform-browser'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
 import {ColorUtilities, hexColor} from 'color-utilities'
 
@@ -81,7 +81,7 @@ describe('Background to text color match directive', () => {
     expect(getTextColor()).toBe(white) // Likewise. White background, black font color taken from "darkTextColor".
   })
 
-  it('should have default text color values with enough contrast to each other (> 17) used when no colors are provided', () => {
+  it('should have default color values with enough contrast to each other used when no color is provided', () => {
     expect(component.darkTextColor).toBeUndefined()
     expect(component.lightTextColor).toBeUndefined()
     let lightColor: hexColor = getTextColor()
@@ -112,7 +112,7 @@ describe('Background to text color match directive', () => {
     setBackground('invalid-color')
     expect(getTextColor()).toBe(black)
   })
-  
+
   it('should use default text colors if invalid values were provided', () => {
     component.darkTextColor = 'invalid'
     component.lightTextColor = 'invalid'

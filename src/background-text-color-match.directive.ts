@@ -1,8 +1,8 @@
 import {
   Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,
   HostBinding
-} from '@angular/core';
-import {ColorUtilities, hexColor} from 'color-utilities';
+} from '@angular/core'
+import {ColorUtilities, hexColor} from 'color-utilities'
 
 @Directive({
   selector: '[match-text-color-to-background]',
@@ -23,12 +23,12 @@ export class MatchTextColorDirective implements OnChanges {
   colorChange = new EventEmitter<hexColor>()
 
   @HostBinding('class.matched-light')
-  get matchedLight(): boolean {
+  private get matchedLight(): boolean {
     return this.currentColor === this.lightColor
   }
 
   @HostBinding('class.matched-dark')
-  get matchedDark(): boolean {
+  private get matchedDark(): boolean {
     return this.currentColor === this.darkColor
   }
 
@@ -40,8 +40,8 @@ export class MatchTextColorDirective implements OnChanges {
     return this.isColorValid(this.darkTextColor) ? this.darkTextColor : this.defaultDarkColor
   }
 
-  private readonly defaultLightColor = ColorUtilities.white
-  private readonly defaultDarkColor = ColorUtilities.black
+  private readonly defaultLightColor: hexColor = ColorUtilities.white
+  private readonly defaultDarkColor: hexColor = ColorUtilities.black
 
   private currentColor: hexColor | null = this.darkColor
 
