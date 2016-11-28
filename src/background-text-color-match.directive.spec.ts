@@ -27,7 +27,6 @@ describe('Background to text color match directive', () => {
   let component: TestComponent
   let debugElement: DebugElement
 
-  const getBcgColor = () => debugElement.styles['backgroundColor']
   const getTextColor = () => debugElement.styles['color']
   const makeChange = () => fixture.detectChanges()
 
@@ -41,17 +40,15 @@ describe('Background to text color match directive', () => {
     debugElement = fixture.debugElement.query(By.css('div'))
   })
 
-  beforeEach(() => {
-    expect(getBcgColor()).toBeUndefined()
-    makeChange()
-  })
+  // Initial binding.
+  beforeEach(makeChange)
 
-  it('should set the background color to the provided color', () => {
-    expect(getBcgColor()).toBe(initialBcgColor)
+  it('should not modify the background color of the host element', () => {
+    expect(debugElement.styles['backgroundColor']).toBeUndefined()
   })
 
   it('should set an initial text color value based on the provided background color', () => {
-    expect(getBcgColor()).toBe(initialBcgColor)
+    expect(component.backgroundColor).toBe(initialBcgColor)
     expect(getTextColor())
   })
 
@@ -90,7 +87,6 @@ describe('Background to text color match directive', () => {
   it('should have default text color values with enough contrast to each other (> 17) used when no colors are provided', () => {
     expect(component.darkTextColor).toBeUndefined()
     expect(component.lightTextColor).toBeUndefined()
-    expect(getBcgColor()).toBe(initialBcgColor)
     let lightColor: hexColor = getTextColor()
     component.backgroundColor = white
     makeChange()
