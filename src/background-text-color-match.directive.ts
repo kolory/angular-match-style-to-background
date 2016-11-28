@@ -6,10 +6,6 @@ import {ColorUtilities, hexColor} from 'color-utilities';
   providers: [ColorUtilities]
 })
 export class MatchTextColorDirective implements OnChanges {
-  private readonly defaultLightColor = ColorUtilities.white
-  private readonly defaultDarkColor = ColorUtilities.black
-
-  private currentColor: hexColor | null = this.darkColor
 
   @Input('match-text-color-to-background')
   backgroundColor: hexColor | null
@@ -23,13 +19,18 @@ export class MatchTextColorDirective implements OnChanges {
   @Output()
   colorChange = new EventEmitter<hexColor>()
 
-  get lightColor(): hexColor {
+  private get lightColor(): hexColor {
     return this.lightTextColor || this.defaultLightColor
   }
 
-  get darkColor(): hexColor {
+  private get darkColor(): hexColor {
     return this.darkTextColor || this.defaultDarkColor
   }
+
+  private readonly defaultLightColor = ColorUtilities.white
+  private readonly defaultDarkColor = ColorUtilities.black
+
+  private currentColor: hexColor | null = this.darkColor
 
   constructor(private renderer: Renderer, private element: ElementRef, private colorUtilities: ColorUtilities) {}
 
