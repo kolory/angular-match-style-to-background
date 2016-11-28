@@ -75,6 +75,18 @@ describe('Background to text color match directive', () => {
     expect(getTextColor()).toBe(white)
   })
 
+  it('should actually ignore consumer\'s declaration which color is which and calculate contrast itself', () => {
+    // Mismatched declarations. Light is darker than dark.
+    component.lightTextColor = black
+    component.darkTextColor = white
+    component.backgroundColor = white
+    makeChange()
+    expect(getTextColor()).toBe(black) // White background, so black font. Even though it's "darkTextColor".
+    component.backgroundColor = black
+    makeChange()
+    expect(getTextColor()).toBe(white) // Likewise. White background, black font color taken from "darkTextColor".
+  })
+
   it('should have default text color values with enough contrast to each other (> 17) used when no colors are provided', () => {
     expect(component.darkTextColor).toBeUndefined()
     expect(component.lightTextColor).toBeUndefined()
