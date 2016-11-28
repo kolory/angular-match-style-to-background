@@ -13,20 +13,15 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
     "strictNullChecks": false,
     "stripInternal": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "es6"
-    ],
-    "types": [
-      "jasmine"
-    ]
+    "lib": ["dom", "es6"],
+    "types": ["jasmine"]
   },
-  "include": ["./src/**/*"],
-  "exclude": [
-    "node_modules", "dist"
-  ]
+  "include": ["./src/**/*", "./base.spec"],
+  "exclude": ["node_modules", "dist"]
 }
