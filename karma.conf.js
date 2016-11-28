@@ -62,11 +62,11 @@ module.exports = function (config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    // karmaTypescriptConfig: {
-    //   reports: {
-    //     "html": "coverage",
-    //     "text-summary": ""
-    //   }
-    // }
+    karmaTypescriptConfig: {
+      reports: {
+        "html": "coverage",
+        "text-summary": ""
+      }
+    }
   })
 };
