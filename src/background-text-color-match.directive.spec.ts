@@ -125,4 +125,19 @@ describe('Background to text color match directive', () => {
     makeChange()
     expect(getTextColor).not.toBe(component.lightTextColor)
   })
+
+  it('should set a class name on the host element to inform which color was matched', () => {
+    // Initially the light text should be matched (since the default color in test is black).
+    expect(debugElement.classes['matched-light']).toBeTruthy()
+
+    // Change to the light variant.
+    component.backgroundColor = white
+    makeChange()
+    expect(debugElement.classes['matched-dark']).toBeTruthy()
+
+    // And back again to dark, to make sure everything works fine.
+    component.backgroundColor = black
+    makeChange()
+    expect(debugElement.classes['matched-light']).toBeTruthy()
+  })
 })
