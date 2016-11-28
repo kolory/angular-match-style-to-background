@@ -4,7 +4,7 @@
   "description": "Angular 2 directive to dynamically match the font color depending on the backgorund's color",
   "main": "index.js",
   "scripts": {
-    "test": "node --max-old-space-size=4096 node_modules/karma/bin/karma start",
+    "test": "npm run lint && node --max-old-space-size=4096 node_modules/karma/bin/karma start",
     "lint": "./node_modules/tslint/bin/tslint --type-check --project ./tsconfig.json --config ./tslint.json"
   },
   "keywords": [
