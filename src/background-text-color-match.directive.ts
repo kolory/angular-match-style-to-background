@@ -40,8 +40,8 @@ export class MatchTextColorDirective implements OnChanges {
     return this.isColorValid(this.darkTextColor) ? this.darkTextColor : this.defaultDarkColor
   }
 
-  private readonly defaultLightColor: hexColor = ColorUtilities.white
-  private readonly defaultDarkColor: hexColor = ColorUtilities.black
+  private readonly defaultLightColor: hexColor = ColorUtilities.color['white']
+  private readonly defaultDarkColor: hexColor = ColorUtilities.color['black']
 
   private currentColor: hexColor | null = this.darkColor
 
