@@ -20,14 +20,16 @@ class TestComponent {
 }
 
 describe('Background to text color match directive', () => {
+  const colorUtilities = new ColorUtilities()
+
   let testBed: typeof TestBed
   let fixture: ComponentFixture<TestComponent>
   let component: TestComponent
   let debugElement: DebugElement
-  const colorUtilities = new ColorUtilities()
 
   const getBcgColor = () => debugElement.styles['backgroundColor']
   const getTextColor = () => debugElement.styles['color']
+  const makeChange = () => fixture.detectChanges()
 
   beforeEach(() => {
     testBed = TestBed.configureTestingModule({
@@ -41,7 +43,7 @@ describe('Background to text color match directive', () => {
 
   beforeEach(() => {
     expect(getBcgColor()).toBeUndefined()
-    fixture.detectChanges()
+    makeChange()
   })
 
   it('should set the background color to the provided color', () => {
@@ -57,7 +59,7 @@ describe('Background to text color match directive', () => {
     component.backgroundColor = null
     component.darkTextColor = black
     component.lightTextColor = white
-    fixture.detectChanges()
+    makeChange()
     expect(getTextColor()).toBe(black)
   })
 
@@ -66,10 +68,10 @@ describe('Background to text color match directive', () => {
     component.darkTextColor = black
     expect(getTextColor()).toBe(white)
     component.backgroundColor = white
-    fixture.detectChanges()
+    makeChange()
     expect(getTextColor()).toBe(black)
     component.backgroundColor = black
-    fixture.detectChanges()
+    makeChange()
     expect(getTextColor()).toBe(white)
   })
 
@@ -79,7 +81,7 @@ describe('Background to text color match directive', () => {
     expect(getBcgColor()).toBe(initialBcgColor)
     let lightColor: hexColor = getTextColor()
     component.backgroundColor = white
-    fixture.detectChanges()
+    makeChange()
     let darkColor: hexColor = getTextColor()
     expect(colorUtilities.calculateContrastRatio(lightColor, darkColor)).toBeGreaterThanOrEqual(17)
   })
@@ -87,21 +89,28 @@ describe('Background to text color match directive', () => {
   it('should inform a parent component about the color change', () => {
     expect(component.currentColor).toBe(white) // Initial setting
     component.backgroundColor = white
-    fixture.detectChanges()
+    makeChange()
     expect(component.currentColor).toBe(black)
     component.backgroundColor = '#FEFEFE' // Small change to make sure the color of the text will not change
-    fixture.detectChanges()
+    makeChange()
     expect(component.currentColor).toBe(black)
   })
 
   it('should allow using shorthand color values and small letters', () => {
     component.backgroundColor = '#fff'
     component.darkTextColor = '#333'
-    fixture.detectChanges()
+    makeChange()
     expect(getTextColor()).toBe('#333')
   })
 
-  it('should not allow using invalid color values', () => {
-    // TODO
+  it('should set the text color to the default state when a background color is not valid HEX', () => {
+    // 1. Initially change the text color so it won't be in the default state.
+    component.backgroundColor = black;
+    makeChange()
+    expect(getTextColor()).toBe(white)
+    // 2. Change the background color to an invalid one.
+    component.backgroundColor = 'invalid-color'
+    makeChange()
+    expect(getTextColor()).toBe(black)
   })
 })

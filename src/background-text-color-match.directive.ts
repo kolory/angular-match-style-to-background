@@ -38,7 +38,7 @@ export class MatchTextColorDirective implements OnChanges {
     const currentBcgColor = backgroundColor && backgroundColor.currentValue
     let textColor: hexColor
 
-    if (currentBcgColor) {
+    if (this.isColorValid(currentBcgColor)) {
       this.renderer.setElementStyle(this.element.nativeElement, 'backgroundColor', currentBcgColor)
       textColor = this.getColorWithHigherContrast(currentBcgColor)
     } else {
@@ -60,5 +60,9 @@ export class MatchTextColorDirective implements OnChanges {
       this.colorChange.emit(color)
       this.currentColor = color
     }
+  }
+
+  private isColorValid(color: hexColor): boolean {
+    return this.colorUtilities.isValidHexColor(color)
   }
 }
