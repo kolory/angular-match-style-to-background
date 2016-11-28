@@ -19,12 +19,12 @@ export class MatchTextColorDirective implements OnChanges {
   @Output()
   colorChange = new EventEmitter<hexColor>()
 
-  private get lightColor(): hexColor {
-    return this.lightTextColor || this.defaultLightColor
+  private get lightColor(): hexColor | null {
+    return this.isColorValid(this.lightTextColor) ? this.lightTextColor : this.defaultLightColor
   }
 
-  private get darkColor(): hexColor {
-    return this.darkTextColor || this.defaultDarkColor
+  private get darkColor(): hexColor | null {
+    return this.isColorValid(this.darkTextColor) ? this.darkTextColor : this.defaultDarkColor
   }
 
   private readonly defaultLightColor = ColorUtilities.white

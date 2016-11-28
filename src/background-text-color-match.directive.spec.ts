@@ -113,4 +113,16 @@ describe('Background to text color match directive', () => {
     makeChange()
     expect(getTextColor()).toBe(black)
   })
+  
+  it('should use default text colors if invalid values were provided', () => {
+    component.darkTextColor = 'invalid'
+    component.lightTextColor = 'invalid'
+    makeChange()
+    // 1. initially, the default color should be set.
+    expect(getTextColor()).not.toBe(component.darkTextColor)
+    // 2. Then, when changing to a dark color, initial light text color should be used.
+    component.backgroundColor = black
+    makeChange()
+    expect(getTextColor).not.toBe(component.lightTextColor)
+  })
 })
