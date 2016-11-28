@@ -22,20 +22,22 @@ class TestComponent {
 describe('Background to text color match directive', () => {
   const colorUtilities = new ColorUtilities()
 
-  let testBed: typeof TestBed
   let fixture: ComponentFixture<TestComponent>
   let component: TestComponent
   let debugElement: DebugElement
 
   const getTextColor = () => debugElement.styles['color']
   const makeChange = () => fixture.detectChanges()
+  const setBackground = (color: hexColor) => {
+    component.backgroundColor = color
+    makeChange()
+  }
 
   beforeEach(() => {
-    testBed = TestBed.configureTestingModule({
+    fixture = TestBed.configureTestingModule({
       providers: [ColorUtilities],
       declarations: [MatchTextColorDirective, TestComponent]
-    })
-    fixture = testBed.createComponent(TestComponent)
+    }).createComponent(TestComponent)
     component = fixture.componentInstance
     debugElement = fixture.debugElement.query(By.css('div'))
   })
@@ -53,10 +55,9 @@ describe('Background to text color match directive', () => {
   })
 
   it('should use the dark text color in case the background color is not defined', () => {
-    component.backgroundColor = null
     component.darkTextColor = black
     component.lightTextColor = white
-    makeChange()
+    setBackground(null)
     expect(getTextColor()).toBe(black)
   })
 
@@ -64,11 +65,9 @@ describe('Background to text color match directive', () => {
     component.lightTextColor = white
     component.darkTextColor = black
     expect(getTextColor()).toBe(white)
-    component.backgroundColor = white
-    makeChange()
+    setBackground(white)
     expect(getTextColor()).toBe(black)
-    component.backgroundColor = black
-    makeChange()
+    setBackground(black)
     expect(getTextColor()).toBe(white)
   })
 
@@ -76,11 +75,9 @@ describe('Background to text color match directive', () => {
     // Mismatched declarations. Light is darker than dark.
     component.lightTextColor = black
     component.darkTextColor = white
-    component.backgroundColor = white
-    makeChange()
+    setBackground(white)
     expect(getTextColor()).toBe(black) // White background, so black font. Even though it's "darkTextColor".
-    component.backgroundColor = black
-    makeChange()
+    setBackground(black)
     expect(getTextColor()).toBe(white) // Likewise. White background, black font color taken from "darkTextColor".
   })
 
@@ -88,37 +85,31 @@ describe('Background to text color match directive', () => {
     expect(component.darkTextColor).toBeUndefined()
     expect(component.lightTextColor).toBeUndefined()
     let lightColor: hexColor = getTextColor()
-    component.backgroundColor = white
-    makeChange()
+    setBackground(white)
     let darkColor: hexColor = getTextColor()
     expect(colorUtilities.calculateContrastRatio(lightColor, darkColor)).toBeGreaterThanOrEqual(17)
   })
 
   it('should inform a parent component about the color change', () => {
     expect(component.currentColor).toBe(white) // Initial setting
-    component.backgroundColor = white
-    makeChange()
+    setBackground(white)
     expect(component.currentColor).toBe(black)
-    component.backgroundColor = '#FEFEFE' // Small change to make sure the color of the text will not change
-    makeChange()
+    setBackground('#FEFEFE') // Small change to make sure the color of the text will not change
     expect(component.currentColor).toBe(black)
   })
 
   it('should allow using shorthand color values and small letters', () => {
-    component.backgroundColor = '#fff'
     component.darkTextColor = '#333'
-    makeChange()
+    setBackground('#fff')
     expect(getTextColor()).toBe('#333')
   })
 
   it('should set the text color to the default state when a background color is not valid HEX', () => {
     // 1. Initially change the text color so it won't be in the default state.
-    component.backgroundColor = black;
-    makeChange()
+    setBackground(black)
     expect(getTextColor()).toBe(white)
     // 2. Change the background color to an invalid one.
-    component.backgroundColor = 'invalid-color'
-    makeChange()
+    setBackground('invalid-color')
     expect(getTextColor()).toBe(black)
   })
   
@@ -129,8 +120,7 @@ describe('Background to text color match directive', () => {
     // 1. initially, the default color should be set.
     expect(getTextColor()).not.toBe(component.darkTextColor)
     // 2. Then, when changing to a dark color, initial light text color should be used.
-    component.backgroundColor = black
-    makeChange()
+    setBackground(black)
     expect(getTextColor).not.toBe(component.lightTextColor)
   })
 
@@ -139,13 +129,11 @@ describe('Background to text color match directive', () => {
     expect(debugElement.classes['matched-light']).toBeTruthy()
 
     // Change to the light variant.
-    component.backgroundColor = white
-    makeChange()
+    setBackground(white)
     expect(debugElement.classes['matched-dark']).toBeTruthy()
 
     // And back again to dark, to make sure everything works fine.
-    component.backgroundColor = black
-    makeChange()
+    setBackground(black)
     expect(debugElement.classes['matched-light']).toBeTruthy()
   })
 })
