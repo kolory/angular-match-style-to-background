@@ -9,7 +9,7 @@ module.exports = function (config) {
     files: [
       { pattern: "base.spec.ts" },
       // { pattern: "src/app/**/*.+(ts|html)" }
-      {pattern: 'src/**/*.ts'}
+      { pattern: 'src/**/*.ts' }
     ],
 
     // list of files to exclude
