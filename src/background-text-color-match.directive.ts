@@ -5,8 +5,7 @@ import {
 import {ColorUtilities, hexColor} from 'color-utilities'
 
 @Directive({
-  selector: '[match-text-color-to-background]',
-  providers: [ColorUtilities]
+  selector: '[match-text-color-to-background]'
 })
 export class MatchTextColorDirective implements OnChanges {
 
