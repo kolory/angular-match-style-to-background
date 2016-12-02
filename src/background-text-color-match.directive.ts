@@ -2,7 +2,7 @@ import {
   Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,
   HostBinding
 } from '@angular/core'
-import {hexColor, ColorUtilities} from '@radiatingstar/color-utilities'
+import {anyColor, ColorUtilities} from '@radiatingstar/color-utilities'
 
 @Directive({
   selector: '[match-text-color-to-background]'
@@ -10,16 +10,16 @@ import {hexColor, ColorUtilities} from '@radiatingstar/color-utilities'
 export class MatchTextColorDirective implements OnChanges {
 
   @Input('match-text-color-to-background')
-  backgroundColor: hexColor | null
+  backgroundColor: anyColor | null
 
   @Input()
-  lightTextColor: hexColor = this.defaultLightColor
+  lightTextColor: anyColor = this.defaultLightColor
 
   @Input()
-  darkTextColor: hexColor = this.defaultDarkColor
+  darkTextColor: anyColor = this.defaultDarkColor
 
   @Output()
-  colorChange = new EventEmitter<hexColor>()
+  colorChange = new EventEmitter<anyColor>()
 
   @HostBinding('class.matched-light')
   private get matchedLight(): boolean {
@@ -31,24 +31,24 @@ export class MatchTextColorDirective implements OnChanges {
     return this.currentColor === this.darkColor
   }
 
-  private get lightColor(): hexColor | null {
+  private get lightColor(): anyColor | null {
     return this.isColorValid(this.lightTextColor) ? this.lightTextColor : this.defaultLightColor
   }
 
-  private get darkColor(): hexColor | null {
+  private get darkColor(): anyColor | null {
     return this.isColorValid(this.darkTextColor) ? this.darkTextColor : this.defaultDarkColor
   }
 
-  private readonly defaultLightColor: hexColor = ColorUtilities.color['white']
-  private readonly defaultDarkColor: hexColor = ColorUtilities.color['black']
+  private readonly defaultLightColor: anyColor = ColorUtilities.color['white']
+  private readonly defaultDarkColor: anyColor = ColorUtilities.color['black']
 
-  private currentColor: hexColor | null = this.darkColor
+  private currentColor: anyColor | null = this.darkColor
 
   constructor(private renderer: Renderer, private element: ElementRef, private colorUtilities: ColorUtilities) {}
 
   ngOnChanges({backgroundColor}: SimpleChanges) {
     const currentBcgColor = backgroundColor && backgroundColor.currentValue
-    let textColor: hexColor
+    let textColor: anyColor
 
     if (this.isColorValid(currentBcgColor)) {
       textColor = this.getColorWithHigherContrast(currentBcgColor)
@@ -59,13 +59,13 @@ export class MatchTextColorDirective implements OnChanges {
     this.setTextColor(textColor)
   }
 
-  private getColorWithHigherContrast(backgroundColor: hexColor): hexColor {
+  private getColorWithHigherContrast(backgroundColor: anyColor): anyColor {
     const withLightContrast = this.colorUtilities.calculateContrastRatio(backgroundColor, this.lightColor)
     const withDarkContrast = this.colorUtilities.calculateContrastRatio(backgroundColor, this.darkColor)
     return withLightContrast > withDarkContrast ? this.lightColor : this.darkColor
   }
 
-  private setTextColor(color: hexColor): void {
+  private setTextColor(color: anyColor): void {
     this.renderer.setElementStyle(this.element.nativeElement, 'color', color)
     if (color !== this.currentColor) {
       this.colorChange.emit(color)
@@ -73,7 +73,7 @@ export class MatchTextColorDirective implements OnChanges {
     }
   }
 
-  private isColorValid(color: hexColor): boolean {
-    return this.colorUtilities.isValidHexColor(color)
+  private isColorValid(color: anyColor): boolean {
+    return this.colorUtilities.isValidColor(color)
   }
 }
