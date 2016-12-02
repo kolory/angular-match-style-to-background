@@ -2,7 +2,7 @@ import {TestBed, ComponentFixture} from '@angular/core/testing'
 import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
-import {ColorUtilities, hexColor} from '@rs/color-utilities'
+import {ColorUtilities, hexColor} from '@radiatingstar/color-utilities'
 
 const black = '#000000'
 const white = '#FFFFFF'

@@ -2,7 +2,7 @@ import {
   Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,
   HostBinding
 } from '@angular/core'
-import {hexColor, ColorUtilities} from '@rs/color-utilities'
+import {hexColor, ColorUtilities} from '@radiatingstar/color-utilities'
 
 @Directive({
   selector: '[match-text-color-to-background]'
