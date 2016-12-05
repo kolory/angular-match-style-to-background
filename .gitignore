@@ -15,3 +15,4 @@ node_modules
 *.js.map
 *.d.ts
 npm-debug.log
+/lcov.info
