@@ -2,7 +2,7 @@ import {TestBed, ComponentFixture} from '@angular/core/testing'
 import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
-import {ColorUtilities, hexColor, Color} from '@kolory/color-utilities'
+import {ColorUtilities, hexColor, anyColor, Color} from '@kolory/color-utilities'
 
 const black = '#000000'
 const white = '#FFFFFF'
@@ -13,9 +13,9 @@ const initialBcgColor = '#000000'
                   [lightTextColor]="lightTextColor" [darkTextColor]="darkTextColor"></div>`
 })
 class TestComponent {
-  backgroundColor: hexColor | null = initialBcgColor
-  lightTextColor: hexColor | null
-  darkTextColor: hexColor | null
+  backgroundColor: Color | anyColor | null = initialBcgColor
+  lightTextColor: Color | anyColor | null
+  darkTextColor: Color | anyColor | null
   currentColor: Color | null
 }
 
@@ -28,7 +28,7 @@ describe('Background to text color match directive', () => {
 
   const getTextColor = () => debugElement.styles['color']
   const makeChange = () => fixture.detectChanges()
-  const setBackground = (color: hexColor) => {
+  const setBackground = (color: hexColor | Color) => {
     component.backgroundColor = color
     makeChange()
   }
@@ -135,5 +135,32 @@ describe('Background to text color match directive', () => {
     // And back again to dark, to make sure everything works fine.
     setBackground(black)
     expect(debugElement.classes['matched-light']).toBeTruthy()
+  })
+
+  it('should work with Color objects', () => {
+    component.darkTextColor = new Color('#000001')
+    component.lightTextColor = new Color('#FFFFF0')
+    makeChange()
+    expect(getTextColor()).toBe('#000001')
+    setBackground(new Color('#000000'))
+    expect(getTextColor()).toBe('#FFFFF0')
+  })
+
+  it('should work with RGB and HSL colors', () => {
+    component.darkTextColor = 'rgb(0, 0, 0)'
+    component.lightTextColor = 'rgb(255, 255, 255)'
+    makeChange()
+    expect(getTextColor()).toBe('#000000')
+    setBackground('rgb(0, 0, 0)')
+    expect(getTextColor()).toBe('#FFFFFF')
+
+    setBackground('#FFFFFF')
+
+    component.darkTextColor = 'hsl(0, 0%, 0%)'
+    component.lightTextColor = 'rgb(0, 0%, 100%)'
+    makeChange()
+    expect(getTextColor()).toBe('#000000')
+    setBackground('hsl(0, 0%, 0%)')
+    expect(getTextColor()).toBe('#FFFFFF')
   })
 })

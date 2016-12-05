@@ -39,16 +39,6 @@ export class MatchTextColorDirective implements OnChanges {
     return this.resolveColor(this.darkTextColor, this.defaultDarkColor)
   }
 
-  private resolveColor(color: anyColor | Color, defaultColor: Color): Color {
-    if (Color.isColor(color)) {
-      return color as Color
-    } else if (this.isColorValid(color as anyColor)) {
-      return Color.create(color)
-    } else {
-      return defaultColor
-    }
-  }
-
   private readonly defaultLightColor = Color.white
   private readonly defaultDarkColor = Color.black
 
@@ -67,6 +57,16 @@ export class MatchTextColorDirective implements OnChanges {
     }
 
     this.setTextColor(textColor)
+  }
+
+  private resolveColor(color: anyColor | Color, defaultColor: Color): Color {
+    if (Color.isColor(color)) {
+      return color as Color
+    } else if (this.isColorValid(color as anyColor)) {
+      return Color.create(color)
+    } else {
+      return defaultColor
+    }
   }
 
   private getColorWithHigherContrast(backgroundColor: Color): Color {
