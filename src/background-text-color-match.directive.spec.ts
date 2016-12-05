@@ -101,7 +101,7 @@ describe('Background to text color match directive', () => {
   it('should allow using shorthand color values and small letters', () => {
     component.darkTextColor = '#333'
     setBackground('#fff')
-    expect(getTextColor()).toBe('#333')
+    expect(getTextColor()).toBe('#333333')
   })
 
   it('should set the text color to the default state when a background color is not valid HEX', () => {
