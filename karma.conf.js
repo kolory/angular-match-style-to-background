@@ -46,13 +46,24 @@ module.exports = function (config) {
     browsers: [
       //'PhantomJS', // FIXME: Can't find variable map
       // 'Chrome',
-      'ChromeCanary',
+      // 'ChromeCanary',
+      'Chrome_small'
       // 'Firefox',
       // 'FirefoxDeveloper',
       // 'Safari',
       // 'Opera',
       // 'IE'
     ],
+
+    customLaunchers: {
+      Chrome_small: {
+        base: 'ChromeCanary',
+        flags: [
+          '--window-size=400,400',
+          '--window-position=-400,0'
+        ]
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
