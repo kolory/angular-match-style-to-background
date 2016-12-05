@@ -2,7 +2,7 @@ import {TestBed, ComponentFixture} from '@angular/core/testing'
 import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
-import {ColorUtilities, hexColor} from '@kolory/color-utilities'
+import {ColorUtilities, hexColor, Color} from '@kolory/color-utilities'
 
 const black = '#000000'
 const white = '#FFFFFF'
@@ -16,7 +16,7 @@ class TestComponent {
   backgroundColor: hexColor | null = initialBcgColor
   lightTextColor: hexColor | null
   darkTextColor: hexColor | null
-  currentColor: hexColor | null
+  currentColor: Color | null
 }
 
 describe('Background to text color match directive', () => {
@@ -91,11 +91,11 @@ describe('Background to text color match directive', () => {
   })
 
   it('should inform a parent component about the color change', () => {
-    expect(component.currentColor).toBe(white) // Initial setting
+    expect(component.currentColor.hex).toBe(white) // Initial setting
     setBackground(white)
-    expect(component.currentColor).toBe(black)
+    expect(component.currentColor.hex).toBe(black)
     setBackground('#FEFEFE') // Small change to make sure the color of the text will not change
-    expect(component.currentColor).toBe(black)
+    expect(component.currentColor.hex).toBe(black)
   })
 
   it('should allow using shorthand color values and small letters', () => {
