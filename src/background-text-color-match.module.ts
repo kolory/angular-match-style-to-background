@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
-import {ColorUtilities} from '@radiatingstar/color-utilities'
+import {ColorUtilities} from '@kolory/color-utilities'
 
 @NgModule({
   providers: [ColorUtilities],

@@ -2,7 +2,7 @@ import {
   Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,
   HostBinding
 } from '@angular/core'
-import {anyColor, ColorUtilities} from '@radiatingstar/color-utilities'
+import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
 
 @Directive({
   selector: '[match-text-color-to-background]'
@@ -10,16 +10,16 @@ import {anyColor, ColorUtilities} from '@radiatingstar/color-utilities'
 export class MatchTextColorDirective implements OnChanges {
 
   @Input('match-text-color-to-background')
-  backgroundColor: anyColor | null
+  backgroundColor: anyColor | Color | null
 
   @Input()
-  lightTextColor: anyColor = this.defaultLightColor
+  lightTextColor: anyColor | Color = this.defaultLightColor
 
   @Input()
-  darkTextColor: anyColor = this.defaultDarkColor
+  darkTextColor: anyColor | Color = this.defaultDarkColor
 
   @Output()
-  colorChange = new EventEmitter<anyColor>()
+  colorChange = new EventEmitter<Color>()
 
   @HostBinding('class.matched-light')
   private get matchedLight(): boolean {
@@ -31,27 +31,37 @@ export class MatchTextColorDirective implements OnChanges {
     return this.currentColor === this.darkColor
   }
 
-  private get lightColor(): anyColor | null {
-    return this.isColorValid(this.lightTextColor) ? this.lightTextColor : this.defaultLightColor
+  private get lightColor(): Color | null {
+    return this.resolveColor(this.lightTextColor, this.defaultLightColor)
   }
 
-  private get darkColor(): anyColor | null {
-    return this.isColorValid(this.darkTextColor) ? this.darkTextColor : this.defaultDarkColor
+  private get darkColor(): Color | null {
+    return this.resolveColor(this.darkTextColor, this.defaultDarkColor)
   }
 
-  private readonly defaultLightColor: anyColor = ColorUtilities.color['white']
-  private readonly defaultDarkColor: anyColor = ColorUtilities.color['black']
+  private resolveColor(color: anyColor | Color, defaultColor: Color): Color {
+    if (Color.isColor(color)) {
+      return color as Color
+    } else if (this.isColorValid(color as anyColor)) {
+      return Color.create(color)
+    } else {
+      return defaultColor
+    }
+  }
 
-  private currentColor: anyColor | null = this.darkColor
+  private readonly defaultLightColor = Color.white
+  private readonly defaultDarkColor = Color.black
+
+  private currentColor: Color | null = this.darkColor
 
   constructor(private renderer: Renderer, private element: ElementRef, private colorUtilities: ColorUtilities) {}
 
   ngOnChanges({backgroundColor}: SimpleChanges) {
     const currentBcgColor = backgroundColor && backgroundColor.currentValue
-    let textColor: anyColor
+    let textColor: Color
 
     if (this.isColorValid(currentBcgColor)) {
-      textColor = this.getColorWithHigherContrast(currentBcgColor)
+      textColor = this.getColorWithHigherContrast(Color.create(currentBcgColor))
     } else {
       textColor = this.darkColor
     }
@@ -59,21 +69,21 @@ export class MatchTextColorDirective implements OnChanges {
     this.setTextColor(textColor)
   }
 
-  private getColorWithHigherContrast(backgroundColor: anyColor): anyColor {
-    const withLightContrast = this.colorUtilities.calculateContrastRatio(backgroundColor, this.lightColor)
-    const withDarkContrast = this.colorUtilities.calculateContrastRatio(backgroundColor, this.darkColor)
+  private getColorWithHigherContrast(backgroundColor: Color): Color {
+    const withLightContrast = backgroundColor.calculateContrastTo(this.lightColor)
+    const withDarkContrast = backgroundColor.calculateContrastTo(this.darkColor)
     return withLightContrast > withDarkContrast ? this.lightColor : this.darkColor
   }
 
-  private setTextColor(color: anyColor): void {
-    this.renderer.setElementStyle(this.element.nativeElement, 'color', color)
-    if (color !== this.currentColor) {
+  private setTextColor(color: Color): void {
+    this.renderer.setElementStyle(this.element.nativeElement, 'color', color.toString())
+    if (!color.equals(this.currentColor)) {
       this.colorChange.emit(color)
       this.currentColor = color
     }
   }
 
-  private isColorValid(color: anyColor): boolean {
-    return this.colorUtilities.isValidColor(color)
+  private isColorValid(color: anyColor | Color): boolean {
+    return Color.isColor(color) || this.colorUtilities.isValidColor(color as anyColor)
   }
 }
