@@ -7,6 +7,9 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
+      // Required by PhantomJS. Otherwise strange errors will be thrown.
+      'node_modules/traceur/bin/traceur-runtime.js',
+
       { pattern: "base.spec.ts" },
       // { pattern: "src/app/**/*.+(ts|html)" }
       { pattern: 'src/**/*.ts' }
@@ -44,10 +47,10 @@ module.exports = function (config) {
     // TODO: Create another config file with all browsers.
     // TODO: IE and Edge
     browsers: [
-      //'PhantomJS', // FIXME: Can't find variable map
+      'PhantomJS',
       // 'Chrome',
       // 'ChromeCanary',
-      'Chrome_small'
+      // 'Chrome_small'
       // 'Firefox',
       // 'FirefoxDeveloper',
       // 'Safari',
