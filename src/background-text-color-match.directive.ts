@@ -4,12 +4,14 @@ import {
 } from '@angular/core'
 import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
 
+const DIRECTIVE_NAME = 'match-text-color-to-background'
+
 @Directive({
   selector: '[match-text-color-to-background]'
 })
 export class MatchTextColorDirective implements OnChanges {
 
-  @Input('match-text-color-to-background')
+  @Input(DIRECTIVE_NAME)
   backgroundColor: anyColor | Color | null
 
   @Input()
