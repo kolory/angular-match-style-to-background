@@ -61,7 +61,7 @@
     "switch-default": true,
     "triple-equals": true,
     "use-isnan": true,
-    "cyclomatic-complexity": [true, 3],
+    "cyclomatic-complexity": [true, 4],
     "eofline": true,
     "indent": [true, "spaces"],
     "linebreak-style": [true, "LF"],
@@ -79,7 +79,7 @@
     "arrow-parens": false,
     "class-name": true,
     "comment-format": [true, "check-space", "check-uppercase"],
-    "completed-docs": [false, "classes", "functions", "methods", "properties"],
+    "completed-docs": [true, "classes", "functions", "methods", "properties"],
     "file-header": false,
     "interface-name": false,
     "jsdoc-format": true,
@@ -115,15 +115,14 @@
     "no-sparse-arrays": true,
     "no-unexpected-multiline": true,
     "valid-jsdoc": [
-      false,
+      true,
       {
         "prefer": {
           "return": "returns"
         },
         "requireReturn": false,
         "requireParamDescription": true,
-        "requireReturnDescription": true,
-        "matchDescription": "^[A-Z][A-Za-z0-9\\s]*[.]$"
+        "requireReturnDescription": true
       }
     ],
     "valid-typeof": true,
