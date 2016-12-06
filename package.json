@@ -17,7 +17,7 @@
   "author": "Mateusz Kocz <mateusz@kocz.pl>",
   "license": "MIT",
   "dependencies": {
-    "@kolory/color-utilities": "~0.0.0"
+    "@kolory/color-utilities": "~0.1.1"
   },
   "devDependencies": {
     "@angular/common": "^2.2.3",
