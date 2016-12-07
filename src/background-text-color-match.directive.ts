@@ -1,10 +1,7 @@
-import {
-  Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,
-  HostBinding
-} from '@angular/core'
+import {Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,} from '@angular/core'
 import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
-import {StylesDeclaration} from './styles-declaration';
-import {Style} from './style';
+import {StylesDeclaration} from './styles-declaration'
+import {Style} from './style'
 
 const DIRECTIVE_NAME = 'match-style-to-background'
 const MATCHED_CLASS_NAME_PREFIX = 'matched-'
@@ -14,42 +11,42 @@ const MATCHED_CLASS_NAME_PREFIX = 'matched-'
 })
 
 /**
- * Angular directive to match the text color to the container's background color, making the text always
- * readable.
+ * Angular directive to match the text color and styles to the container's background color, making the text always
+ * readable and other elements visible.
  *
- * Directive requires at least one input argument - match-text-color-to-background - with the value of the current
- * background color to which the font color should be matched. In this case, the font will be either black or white,
+ * Directive requires at least one input argument - match-style-to-background- with the value of the current
+ * background color to which the font color and styles should be matched. In this case (no other inputs),
+ * the font will be either black or white. The input expects a valid color string (in either hex, RGB or HSL
+ * format) or a Color object.
  *
- * For more control, there are two optional inputs: lightTextColor and darkTextColor that will be used depending
- * on which one of them have higher contrast with the background.
+ * For more control, you can provide style definitions that will be used depending on which one of them have
+ * higher contrast with the background. Style definition is an object whose key is the style name (any valid string)
+ * and value is the Color object or a color string in hex, RGB or HSL format.
  *
- * All three inputs expect a string (valid hex, RGB or HSL color) or a Color object (coming from the ColorUtilities
- * library).
+ * When the style changes, the styleChange event is emitted with the changed style definition. This definition
+ * is an object with name, color and contrast values. Name of the style is the same name that was defined in the
+ * `styles` property. The same goes with the color. Contrast holds a value of the contrast ratio of the style's
+ * color to the current background.
  *
- * When the font color is changes, the colorChange event is emitted with the changed color (as a Color object).
- *
- * Directive sets two classes on the host element, depending on which type of color was matched. Class names are:
- * matched-light and matched-dark.
+ * Directive sets classes on the host element, depending on which style was matched. Class names are defined
+ * by the style's name prefixed with "matched", eg. "matched-dark".
  *
  * @example
  * <!-- Simple use case. `backgroundColor` is a variable that holds the current color. Font will be black or white. -->
- * <div [match-text-color-to-background]="backgroundColor"> ... </div>
+ * <div [match-style-to-background]="backgroundColor"> ... </div>
  *
- * @example
- * <!-- Advanced use case. -->
- * <div [match-text-color-to-background]="backgroundColor" lightColor="#FFFFFF" [darkColor]="blackColor"
- *     (colorChange)="handleColorChange($event)"> ... </div>
+ * For advanced use case, refer to the documentation.
  */
 export class MatchTextColorDirective implements OnChanges {
 
   /**
-   * The current background color. A font color will be decided depending on this value.
+   * The current background color. The style will be decided depending on this value.
    */
   @Input(DIRECTIVE_NAME)
   backgroundColor: anyColor | Color | null
 
   /**
-   * Color to be used when the background is dark. By default it's white.
+   * Styles that can be applied.
    */
   @Input()
   styles: StylesDeclaration | null
@@ -61,16 +58,18 @@ export class MatchTextColorDirective implements OnChanges {
   setColor = true
 
   /**
-   * When the font color is changed, event is emitted with the current value of a color.
+   * Emits the selected style definition.
    */
   @Output()
   styleChange = new EventEmitter<Style>()
 
+  // Used when no styles were provided.
   private readonly defaultStyles: StylesDeclaration = {
     'basic-light': Color.white,
     'basic-dark': Color.black
   }
 
+  // Used when an invalid backgorund color was provided.
   private readonly initialStyle: Style = {
     name: 'no-style',
     color: Color.black,
