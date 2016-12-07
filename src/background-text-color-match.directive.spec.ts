@@ -8,6 +8,7 @@ const black = '#000000'
 const white = '#FFFFFF'
 const initialBcgColor = '#000000'
 
+/* tslint: disable */
 @Component({
   template: `<div [match-text-color-to-background]="backgroundColor" (colorChange)="currentColor = $event"
                   [lightTextColor]="lightTextColor" [darkTextColor]="darkTextColor"></div>`
@@ -18,6 +19,7 @@ class TestComponent {
   darkTextColor: Color | anyColor | null
   currentColor: Color | null
 }
+/* tslint:enable */
 
 describe('Background to text color match directive', () => {
   const colorUtilities = new ColorUtilities()
