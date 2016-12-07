@@ -3,8 +3,8 @@ import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
 import {MatchStyleDirective} from './match-style-to-background.directive'
 import {ColorUtilities, hexColor, anyColor, Color} from '@kolory/color-utilities'
-import {StylesDeclaration} from './styles-declaration.interface';
-import {Style} from './style.interface';
+import {StylesDeclaration} from './styles-declaration.interface'
+import {Style} from './style.interface'
 
 /* tslint: disable */
 @Component({
@@ -15,7 +15,7 @@ class TestComponent {
   backgroundColor: Color | anyColor | null
   styles: StylesDeclaration | null = null
   currentStyle: Style = null
-  setColor: boolean;
+  setColor: boolean
 }
 /* tslint:enable */
 
@@ -68,13 +68,13 @@ describe('Style to background match directive', () => {
 
   it('should allow using RGB, hex and HSL values', () => {
     makeChange()
-    component.styles = {'hex': '#FFFFFF'}
+    component.styles = {hex: '#FFFFFF'}
     setBackground(Color.black)
     expect(component.currentStyle.name).toBe('hex')
-    component.styles = {'rgb': 'rgb(255, 255, 255)'}
+    component.styles = {rgb: 'rgb(255, 255, 255)'}
     setBackground('rgb(0, 0, 0)')
     expect(component.currentStyle.name).toBe('rgb')
-    component.styles = {'hsl': 'hsl(0, 100%, 100%)'}
+    component.styles = {hsl: 'hsl(0, 100%, 100%)'}
     setBackground('hsl(0, 0%, 0%)')
     expect(component.currentStyle.name).toBe('hsl')
   })
@@ -105,7 +105,7 @@ describe('Style to background match directive', () => {
   })
 
   it('should not allow using invalid colors in styles definition', () => {
-    component.styles = {'invalid' : 'rgb(300, 300, 300)'}
+    component.styles = {invalid: 'rgb(300, 300, 300)'}
     expect(() => setBackground(Color.white)).toThrow()
   })
 

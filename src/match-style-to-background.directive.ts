@@ -1,4 +1,4 @@
-import {Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,} from '@angular/core'
+import {Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef} from '@angular/core'
 import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
 import {StylesDeclaration} from './styles-declaration.interface'
 import {Style} from './style.interface'
@@ -81,20 +81,25 @@ export class MatchStyleDirective implements OnChanges {
   constructor(private renderer: Renderer, private element: ElementRef, private colorUtilities: ColorUtilities) {}
 
   ngOnChanges({backgroundColor, styles}: SimpleChanges) {
+    /* tslint:disable:cyclomatic-complexity */
     if (styles && styles.currentValue) {
       this.validateStyles(styles.currentValue)
     }
 
-    const currentBcgColor = backgroundColor && backgroundColor.currentValue
-    if (currentBcgColor) {
-      let style: Style
-      if (this.isColorValid(currentBcgColor)) {
-        style = this.getStyleWithHighestContrast(Color.create(currentBcgColor))
-      } else {
-        style = this.initialStyle
-      }
-      this.applyStyle(style)
+    if (backgroundColor && backgroundColor.currentValue) {
+      this.handleBackgroundChange(backgroundColor.currentValue)
     }
+    /* tslint:enable */
+  }
+
+  private handleBackgroundChange(backgroundColor: string) {
+    let style: Style
+    if (this.isColorValid(backgroundColor)) {
+      style = this.getStyleWithHighestContrast(Color.create(backgroundColor))
+    } else {
+      style = this.initialStyle
+    }
+    this.applyStyle(style)
   }
 
   private validateStyles(styles: StylesDeclaration): void {
