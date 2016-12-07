@@ -1,4 +1,7 @@
-# Angular directive for matching a font color to background color depending on it's contrast
+# Angular directive for matching styles to background color depending on it's contrast
+[![Build Status](https://travis-ci.org/kolory/angular-match-style-to-background.svg?branch=master)](https://travis-ci.org/kolory/angular-match-style-to-background)
+[![Code Climate](https://codeclimate.com/github/kolory/angular-match-style-to-background/badges/gpa.svg)](https://codeclimate.com/github/kolory/angular-match-style-to-background)
+[![Test Coverage](https://codeclimate.com/github/kolory/angular-match-style-to-background/badges/coverage.svg)](https://codeclimate.com/github/kolory/angular-match-style-to-background/coverage)
 
 The directive makes sure the color of texts and other elements inside the parent with dynamically changed
 background color will stay readable and visible. The new style is chosen from optionally provided styles declarations
