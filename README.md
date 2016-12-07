@@ -17,11 +17,11 @@ npm install @kolory/angular-match-style-to-background
 // 1. Import the directive's module.
 
 import {NgModule, Component} from '@angular/core'
-import {MatchTextColorModule} from '@kolory/angular-match-style-to-background'
+import {MatchStyleModule} from '@kolory/angular-match-style-to-background'
 
 @NgModule({
   ...
-  import: [MatchTextColorModule, ...],
+  import: [MatchStyleModule, ...],
 })
 class App {}
 
