@@ -15,7 +15,7 @@ class TestComponent {
   backgroundColor: Color | anyColor | null
   styles: StylesDeclaration | null = null
   currentStyle: Style = null
-  setColor = false;
+  setColor: boolean;
 }
 /* tslint:enable */
 
@@ -131,10 +131,17 @@ describe('Style to background match directive', () => {
     expect(component.currentStyle.name).toBe('green') // Curiously, it's not red.
   })
 
-  it('should set the element\'s color when requested', () => {
+  it('should set the element\'s by default', () => {
     component.setColor = true
     component.styles = basicStyles
     setBackground(Color.black)
     expect(debugElement.styles['color']).toBe(Color.white.hex)
+  })
+
+  it('should not set the element\'s when requested', () => {
+    component.setColor = false
+    component.styles = basicStyles
+    setBackground(Color.black)
+    expect(debugElement.styles['color']).toBeFalsy()
   })
 })

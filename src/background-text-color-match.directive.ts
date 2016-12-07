@@ -55,10 +55,10 @@ export class MatchTextColorDirective implements OnChanges {
   styles: StylesDeclaration | null
 
   /**
-   * Optionally sets the color style property on the host element.
+   * Optionally disable the the color style property sets on the host element.
    */
   @Input()
-  setColor = false
+  setColor = true
 
   /**
    * When the font color is changed, event is emitted with the current value of a color.
