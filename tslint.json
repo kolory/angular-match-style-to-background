@@ -79,7 +79,7 @@
     "arrow-parens": false,
     "class-name": true,
     "comment-format": [true, "check-space", "check-uppercase"],
-    "completed-docs": [true, "classes", "functions", "methods", "properties"],
+    "completed-docs": [false, "classes", "functions", "methods", "properties"],
     "file-header": false,
     "interface-name": false,
     "jsdoc-format": true,
