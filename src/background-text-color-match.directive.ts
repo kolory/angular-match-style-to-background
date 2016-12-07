@@ -3,8 +3,11 @@ import {
   HostBinding
 } from '@angular/core'
 import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
+import {StylesDeclaration} from './styles-declaration';
+import {Style} from './style';
 
-const DIRECTIVE_NAME = 'match-text-color-to-background'
+const DIRECTIVE_NAME = 'match-style-to-background'
+const MATCHED_CLASS_NAME_PREFIX = 'matched-'
 
 @Directive({
   selector: `[${DIRECTIVE_NAME}]`
@@ -49,79 +52,75 @@ export class MatchTextColorDirective implements OnChanges {
    * Color to be used when the background is dark. By default it's white.
    */
   @Input()
-  lightTextColor: anyColor | Color = this.defaultLightColor
+  styles: StylesDeclaration | null
 
-  /**
-   * Color to be used when the background is light. By default it's black.
-   */
   @Input()
-  darkTextColor: anyColor | Color = this.defaultDarkColor
 
   /**
    * When the font color is changed, event is emitted with the current value of a color.
    */
   @Output()
-  colorChange = new EventEmitter<Color>()
+  styleChange = new EventEmitter<Style>()
 
-  @HostBinding('class.matched-light')
-  private get matchedLight(): boolean {
-    return this.currentColor === this.lightColor
+  private readonly defaultStyles: StylesDeclaration = {
+    'basic-light': Color.white,
+    'basic-dark': Color.black
   }
 
-  @HostBinding('class.matched-dark')
-  private get matchedDark(): boolean {
-    return this.currentColor === this.darkColor
+  private readonly initialStyle: Style = {
+    name: 'no-style',
+    color: Color.black,
+    contrast: 21
   }
 
-  private get lightColor(): Color | null {
-    return this.resolveColor(this.lightTextColor, this.defaultLightColor)
-  }
-
-  private get darkColor(): Color | null {
-    return this.resolveColor(this.darkTextColor, this.defaultDarkColor)
-  }
-
-  private readonly defaultLightColor = Color.white
-  private readonly defaultDarkColor = Color.black
-
-  private currentColor: Color | null = this.darkColor
+  private currentStyle: Style | null = this.initialStyle
 
   constructor(private renderer: Renderer, private element: ElementRef, private colorUtilities: ColorUtilities) {}
 
-  ngOnChanges({backgroundColor}: SimpleChanges) {
+  ngOnChanges({backgroundColor, styles}: SimpleChanges) {
+    if (styles && styles.currentValue) {
+      this.validateStyles(styles.currentValue)
+    }
+
     const currentBcgColor = backgroundColor && backgroundColor.currentValue
-    let textColor: Color
-
-    if (this.isColorValid(currentBcgColor)) {
-      textColor = this.getColorWithHigherContrast(Color.create(currentBcgColor))
-    } else {
-      textColor = this.darkColor
-    }
-
-    this.setTextColor(textColor)
-  }
-
-  private resolveColor(color: anyColor | Color, defaultColor: Color): Color {
-    if (Color.isColor(color)) {
-      return color as Color
-    } else if (this.isColorValid(color as anyColor)) {
-      return Color.create(color)
-    } else {
-      return defaultColor
+    if (currentBcgColor) {
+      let style: Style
+      if (this.isColorValid(currentBcgColor)) {
+        style = this.getStyleWithHighestContrast(Color.create(currentBcgColor))
+      } else {
+        style = this.initialStyle
+      }
+      this.applyStyle(style)
     }
   }
 
-  private getColorWithHigherContrast(backgroundColor: Color): Color {
-    const withLightContrast = backgroundColor.calculateContrastTo(this.lightColor)
-    const withDarkContrast = backgroundColor.calculateContrastTo(this.darkColor)
-    return withLightContrast > withDarkContrast ? this.lightColor : this.darkColor
+  private validateStyles(styles: StylesDeclaration): void {
+    Object.keys(styles).forEach(name => {
+      const style = styles[name]
+      if (!Color.isColor(style) && !this.colorUtilities.isValidColor(style as string)) {
+        throw new TypeError(`Invalid style used. Expected a map of colors, but got ${style}.`)
+      }
+    })
   }
 
-  private setTextColor(color: Color): void {
-    this.renderer.setElementStyle(this.element.nativeElement, 'color', color.toString())
-    if (!color.equals(this.currentColor)) {
-      this.colorChange.emit(color)
-      this.currentColor = color
+  private getStyleWithHighestContrast(backgroundColor: Color): Style {
+    const styles = this.styles && Object.keys(this.styles).length ? this.styles : this.defaultStyles
+    return Object.keys(styles)
+      .map(name => ({
+        name,
+        color: Color.create(styles[name]),
+        contrast: backgroundColor.calculateContrastTo(styles[name])
+      }))
+      .reduce((currentStyle, style) => currentStyle.contrast > style.contrast ? currentStyle : style)
+  }
+
+  private applyStyle(style: Style): void {
+    if (style.name !== this.currentStyle.name) {
+      this.renderer.setElementClass(this.element.nativeElement,
+        `${MATCHED_CLASS_NAME_PREFIX}${this.currentStyle.name}`, false)
+      this.renderer.setElementClass(this.element.nativeElement, `${MATCHED_CLASS_NAME_PREFIX}${style.name}`, true)
+      this.styleChange.emit(style)
+      this.currentStyle = style
     }
   }
 
