@@ -9,12 +9,13 @@ import {Style} from './style';
 /* tslint: disable */
 @Component({
   template: `<div [match-style-to-background]="backgroundColor" (styleChange)="currentStyle = $event"
-                  [styles]="styles"></div>`
+                  [setColor]="setColor" [styles]="styles"></div>`
 })
 class TestComponent {
   backgroundColor: Color | anyColor | null
   styles: StylesDeclaration | null = null
   currentStyle: Style = null
+  setColor = false;
 }
 /* tslint:enable */
 
@@ -131,6 +132,9 @@ describe('Style to background match directive', () => {
   })
 
   it('should set the element\'s color when requested', () => {
-
+    component.setColor = true
+    component.styles = basicStyles
+    setBackground(Color.black)
+    expect(debugElement.styles['color']).toBe(Color.white.hex)
   })
 })
