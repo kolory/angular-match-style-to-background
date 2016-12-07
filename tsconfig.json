@@ -20,6 +20,6 @@
     "lib": ["dom", "es6"],
     "types": ["jasmine"]
   },
-  "include": ["./src/**/*", "./base.spec"],
+  "include": ["./src/**/*", "./base.spec", "index.ts"],
   "exclude": ["node_modules", "dist"]
 }
