@@ -7,19 +7,59 @@ import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
 const DIRECTIVE_NAME = 'match-text-color-to-background'
 
 @Directive({
-  selector: '[match-text-color-to-background]'
+  selector: `[${DIRECTIVE_NAME}]`
 })
+
+/**
+ * Angular directive to match the text color to the container's background color, making the text always
+ * readable.
+ *
+ * Directive requires at least one input argument - match-text-color-to-background - with the value of the current
+ * background color to which the font color should be matched. In this case, the font will be either black or white,
+ *
+ * For more control, there are two optional inputs: lightTextColor and darkTextColor that will be used depending
+ * on which one of them have higher contrast with the background.
+ *
+ * All three inputs expect a string (valid hex, RGB or HSL color) or a Color object (coming from the ColorUtilities
+ * library).
+ *
+ * When the font color is changes, the colorChange event is emitted with the changed color (as a Color object).
+ *
+ * Directive sets two classes on the host element, depending on which type of color was matched. Class names are:
+ * matched-light and matched-dark.
+ *
+ * @example
+ * <!-- Simple use case. `backgroundColor` is a variable that holds the current color. Font will be black or white. -->
+ * <div [match-text-color-to-background]="backgroundColor"> ... </div>
+ *
+ * @example
+ * <!-- Advanced use case. -->
+ * <div [match-text-color-to-background]="backgroundColor" lightColor="#FFFFFF" [darkColor]="blackColor"
+ *     (colorChange)="handleColorChange($event)"> ... </div>
+ */
 export class MatchTextColorDirective implements OnChanges {
 
+  /**
+   * The current background color. A font color will be decided depending on this value.
+   */
   @Input(DIRECTIVE_NAME)
   backgroundColor: anyColor | Color | null
 
+  /**
+   * Color to be used when the background is dark. By default it's white.
+   */
   @Input()
   lightTextColor: anyColor | Color = this.defaultLightColor
 
+  /**
+   * Color to be used when the background is light. By default it's black.
+   */
   @Input()
   darkTextColor: anyColor | Color = this.defaultDarkColor
 
+  /**
+   * When the font color is changed, event is emitted with the current value of a color.
+   */
   @Output()
   colorChange = new EventEmitter<Color>()
 
