@@ -1,5 +1,5 @@
 {
-  "name": "@kolory/angular-text-color-to-background-match",
+  "name": "@kolory/angular-match-style-to-background",
   "version": "0.0.0",
   "description": "Angular 2 directive to dynamically match the font color depending on the backgorund's color",
   "main": "index.js",
