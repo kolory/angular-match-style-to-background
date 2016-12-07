@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core'
-import {MatchTextColorDirective} from './background-text-color-match.directive'
+import {MatchStyleDirective} from './match-style-to-background.directive'
 import {ColorUtilities} from '@kolory/color-utilities'
 
 @NgModule({
   providers: [ColorUtilities],
-  declarations: [MatchTextColorDirective],
-  exports: [MatchTextColorDirective]
+  declarations: [MatchStyleDirective],
+  exports: [MatchStyleDirective]
 })
-export class MatchTextColorModule {}
+export class MatchStyleModule {}

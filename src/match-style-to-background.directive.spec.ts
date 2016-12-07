@@ -1,10 +1,10 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing'
 import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
-import {MatchTextColorDirective} from './background-text-color-match.directive'
+import {MatchStyleDirective} from './match-style-to-background.directive'
 import {ColorUtilities, hexColor, anyColor, Color} from '@kolory/color-utilities'
-import {StylesDeclaration} from './styles-declaration';
-import {Style} from './style';
+import {StylesDeclaration} from './styles-declaration.interface';
+import {Style} from './style.interface';
 
 /* tslint: disable */
 @Component({
@@ -37,7 +37,7 @@ describe('Style to background match directive', () => {
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
       providers: [ColorUtilities],
-      declarations: [MatchTextColorDirective, TestComponent]
+      declarations: [MatchStyleDirective, TestComponent]
     }).createComponent(TestComponent)
     component = fixture.componentInstance
     debugElement = fixture.debugElement.query(By.css('div'))

@@ -1,7 +1,7 @@
 import {Directive, Input, Renderer, OnChanges, SimpleChanges, Output, EventEmitter, ElementRef,} from '@angular/core'
 import {anyColor, ColorUtilities, Color} from '@kolory/color-utilities'
-import {StylesDeclaration} from './styles-declaration'
-import {Style} from './style'
+import {StylesDeclaration} from './styles-declaration.interface'
+import {Style} from './style.interface'
 
 const DIRECTIVE_NAME = 'match-style-to-background'
 const MATCHED_CLASS_NAME_PREFIX = 'matched-'
@@ -37,7 +37,7 @@ const MATCHED_CLASS_NAME_PREFIX = 'matched-'
  *
  * For advanced use case, refer to the documentation.
  */
-export class MatchTextColorDirective implements OnChanges {
+export class MatchStyleDirective implements OnChanges {
 
   /**
    * The current background color. The style will be decided depending on this value.
