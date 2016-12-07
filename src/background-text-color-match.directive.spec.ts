@@ -3,27 +3,25 @@ import {Component, DebugElement} from '@angular/core'
 import {By} from '@angular/platform-browser'
 import {MatchTextColorDirective} from './background-text-color-match.directive'
 import {ColorUtilities, hexColor, anyColor, Color} from '@kolory/color-utilities'
-
-const black = '#000000'
-const white = '#FFFFFF'
-const initialBcgColor = '#000000'
+import {StylesDeclaration} from './styles-declaration';
+import {Style} from './style';
 
 /* tslint: disable */
 @Component({
-  template: `<div [match-text-color-to-background]="backgroundColor" (colorChange)="currentColor = $event"
-                  [lightTextColor]="lightTextColor" [darkTextColor]="darkTextColor"></div>`
+  template: `<div [match-style-to-background]="backgroundColor" (styleChange)="currentStyle = $event"
+                  [styles]="styles"></div>`
 })
 class TestComponent {
-  backgroundColor: Color | anyColor | null = initialBcgColor
-  lightTextColor: Color | anyColor | null
-  darkTextColor: Color | anyColor | null
-  currentColor: Color | null
+  backgroundColor: Color | anyColor | null
+  styles: StylesDeclaration | null = null
+  currentStyle: Style = null
 }
 /* tslint:enable */
 
-describe('Background to text color match directive', () => {
+describe('Style to background match directive', () => {
   const colorUtilities = new ColorUtilities()
 
+  let basicStyles: StylesDeclaration
   let fixture: ComponentFixture<TestComponent>
   let component: TestComponent
   let debugElement: DebugElement
@@ -44,125 +42,95 @@ describe('Background to text color match directive', () => {
     debugElement = fixture.debugElement.query(By.css('div'))
   })
 
+  beforeEach(() => {
+    basicStyles = {
+      light: Color.white,
+      dark: Color.black
+    }
+  })
+
   // Initial binding.
   beforeEach(makeChange)
 
-  it('should not modify the background color of the host element', () => {
-    expect(debugElement.styles['backgroundColor']).toBeUndefined()
+  it('should not make any change initially', () => {
+    expect(component.currentStyle).toBeNull()
   })
 
-  it('should set an initial text color value based on the provided background color', () => {
-    expect(component.backgroundColor).toBe(initialBcgColor)
-    expect(getTextColor())
-  })
-
-  it('should use the dark text color in case the background color is not defined', () => {
-    component.darkTextColor = black
-    component.lightTextColor = white
-    setBackground(null)
-    expect(getTextColor()).toBe(black)
-  })
-
-  it('should dynamically switch between text colors on background color change', () => {
-    component.lightTextColor = white
-    component.darkTextColor = black
-    expect(getTextColor()).toBe(white)
-    setBackground(white)
-    expect(getTextColor()).toBe(black)
-    setBackground(black)
-    expect(getTextColor()).toBe(white)
-  })
-
-  it('should actually ignore consumer\'s declaration which color is which and calculate contrast itself', () => {
-    // Mismatched declarations. Light is darker than dark.
-    component.lightTextColor = black
-    component.darkTextColor = white
-    setBackground(white)
-    expect(getTextColor()).toBe(black) // White background, so black font. Even though it's "darkTextColor".
-    setBackground(black)
-    expect(getTextColor()).toBe(white) // Likewise. White background, black font color taken from "darkTextColor".
-  })
-
-  it('should have default color values with enough contrast to each other used when no color is provided', () => {
-    expect(component.darkTextColor).toBeUndefined()
-    expect(component.lightTextColor).toBeUndefined()
-    let lightColor: hexColor = getTextColor()
-    setBackground(white)
-    let darkColor: hexColor = getTextColor()
-    expect(colorUtilities.calculateContrastRatio(lightColor, darkColor)).toBeGreaterThanOrEqual(17)
-  })
-
-  it('should inform a parent component about the color change', () => {
-    expect(component.currentColor.hex).toBe(white) // Initial setting
-    setBackground(white)
-    expect(component.currentColor.hex).toBe(black)
-    setBackground('#FEFEFE') // Small change to make sure the color of the text will not change
-    expect(component.currentColor.hex).toBe(black)
-  })
-
-  it('should allow using shorthand color values and small letters', () => {
-    component.darkTextColor = '#333'
-    setBackground('#fff')
-    expect(getTextColor()).toBe('#333333')
-  })
-
-  it('should set the text color to the default state when a background color is not valid HEX', () => {
-    // 1. Initially change the text color so it won't be in the default state.
-    setBackground(black)
-    expect(getTextColor()).toBe(white)
-    // 2. Change the background color to an invalid one.
-    setBackground('invalid-color')
-    expect(getTextColor()).toBe(black)
-  })
-
-  it('should use default text colors if invalid values were provided', () => {
-    component.darkTextColor = 'invalid'
-    component.lightTextColor = 'invalid'
-    makeChange()
-    // 1. initially, the default color should be set.
-    expect(getTextColor()).not.toBe(component.darkTextColor)
-    // 2. Then, when changing to a dark color, initial light text color should be used.
-    setBackground(black)
-    expect(getTextColor).not.toBe(component.lightTextColor)
-  })
-
-  it('should set a class name on the host element to inform which color was matched', () => {
-    // Initially the light text should be matched (since the default color in test is black).
+  it('should set the element\'s class name depending on the matched style', () => {
+    component.styles = basicStyles
+    setBackground(Color.black)
     expect(debugElement.classes['matched-light']).toBeTruthy()
-
-    // Change to the light variant.
-    setBackground(white)
+    setBackground(Color.white)
+    expect(debugElement.classes['matched-light']).toBeFalsy()
     expect(debugElement.classes['matched-dark']).toBeTruthy()
-
-    // And back again to dark, to make sure everything works fine.
-    setBackground(black)
-    expect(debugElement.classes['matched-light']).toBeTruthy()
   })
 
-  it('should work with Color objects', () => {
-    component.darkTextColor = new Color('#000001')
-    component.lightTextColor = new Color('#FFFFF0')
+  it('should allow using RGB, hex and HSL values', () => {
     makeChange()
-    expect(getTextColor()).toBe('#000001')
-    setBackground(new Color('#000000'))
-    expect(getTextColor()).toBe('#FFFFF0')
-  })
-
-  it('should work with RGB and HSL colors', () => {
-    component.darkTextColor = 'rgb(0, 0, 0)'
-    component.lightTextColor = 'rgb(255, 255, 255)'
-    makeChange()
-    expect(getTextColor()).toBe('#000000')
+    component.styles = {'hex': '#FFFFFF'}
+    setBackground(Color.black)
+    expect(component.currentStyle.name).toBe('hex')
+    component.styles = {'rgb': 'rgb(255, 255, 255)'}
     setBackground('rgb(0, 0, 0)')
-    expect(getTextColor()).toBe('#FFFFFF')
-
-    setBackground('#FFFFFF')
-
-    component.darkTextColor = 'hsl(0, 0%, 0%)'
-    component.lightTextColor = 'rgb(0, 0%, 100%)'
-    makeChange()
-    expect(getTextColor()).toBe('#000000')
+    expect(component.currentStyle.name).toBe('rgb')
+    component.styles = {'hsl': 'hsl(0, 100%, 100%)'}
     setBackground('hsl(0, 0%, 0%)')
-    expect(getTextColor()).toBe('#FFFFFF')
+    expect(component.currentStyle.name).toBe('hsl')
+  })
+
+  it('should have default styles when no styles were provided', () => {
+    component.styles = null
+    setBackground(Color.white)
+    expect(component.currentStyle.name).toBe('basic-dark')
+    expect(component.currentStyle.color.hex).toBe(Color.black.hex)
+    setBackground(Color.black)
+    expect(component.currentStyle.name).toBe('basic-light')
+    expect(component.currentStyle.color.hex).toBe(Color.white.hex)
+  })
+
+  it('should default to the no-style when background color is invalid', () => {
+    component.styles = basicStyles
+    setBackground('invalid')
+    expect(component.currentStyle).toBeNull()
+  })
+
+  it('should inform about style change', () => {
+    component.styles = basicStyles
+    setBackground(Color.black)
+    expect(component.currentStyle).toBeDefined()
+    expect(component.currentStyle.name).toBe('light')
+    setBackground(Color.white)
+    expect(component.currentStyle.name).toBe('dark')
+  })
+
+  it('should not allow using invalid colors in styles definition', () => {
+    component.styles = {'invalid' : 'rgb(300, 300, 300)'}
+    expect(() => setBackground(Color.white)).toThrow()
+  })
+
+  it('should allow using only one style', () => {
+    component.styles = {single: Color.red}
+    setBackground(Color.black)
+    expect(component.currentStyle).toBeDefined()
+    expect(component.currentStyle.name).toBe('single')
+    expect(debugElement.classes['matched-single']).toBeTruthy()
+
+    setBackground(Color.white)
+    expect(component.currentStyle.name).toBe('single')
+    expect(debugElement.classes['matched-single']).toBeTruthy()
+  })
+
+  it('should handle more than two styles definitions', () => {
+    component.styles = {red: Color.red, green: Color.green, blue: Color.blue}
+    setBackground(Color.red)
+    expect(component.currentStyle.name).toBe('green')
+    setBackground(Color.green)
+    expect(component.currentStyle.name).toBe('blue')
+    setBackground(Color.blue)
+    expect(component.currentStyle.name).toBe('green') // Curiously, it's not red.
+  })
+
+  it('should set the element\'s color when requested', () => {
+
   })
 })
