@@ -105,7 +105,7 @@ export class MatchStyleDirective implements OnChanges {
   private validateStyles(styles: StylesDeclaration): void {
     Object.keys(styles).forEach(name => {
       const style = styles[name]
-      if (!Color.isColor(style) && !this.colorUtilities.isValidColor(style as string)) {
+      if (!Color.isColor(style) && !this.colorUtilities.isValidColor(style)) {
         throw new TypeError(`Invalid style used. Expected a map of colors, but got ${style}.`)
       }
     })
@@ -136,6 +136,6 @@ export class MatchStyleDirective implements OnChanges {
   }
 
   private isColorValid(color: anyColor | Color): boolean {
-    return Color.isColor(color) || this.colorUtilities.isValidColor(color as anyColor)
+    return Color.isColor(color) || this.colorUtilities.isValidColor(color)
   }
 }
