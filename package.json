@@ -7,7 +7,8 @@
     "test": "npm run lint && node --max-old-space-size=4096 node_modules/karma/bin/karma start --single-run",
     "lint": "./node_modules/tslint/bin/tslint --type-check --project ./tsconfig.json --config ./tslint.json",
     "unit": "node --max-old-space-size=4096 node_modules/karma/bin/karma start",
-    "build": "./node_modules/typescript/bin/tsc",
+    "build": "npm run compile",
+    "compile": "ngc",
     "prepublish": "npm run build"
   },
   "keywords": [
@@ -16,33 +17,41 @@
     "style match"
   ],
   "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": ">=2.0.0 <5.0.0",
+    "@angular/common": ">=2.0.0 <5.0.0"
+  },
   "dependencies": {
     "@kolory/color-utilities": "^0.2.0"
   },
   "devDependencies": {
-    "@angular/common": "^2.2.3",
-    "@angular/compiler": "^2.2.3",
-    "@angular/core": "^2.2.3",
-    "@angular/platform-browser": "^2.2.3",
-    "@angular/platform-browser-dynamic": "^2.2.3",
+    "@angular/common": "^4.0.2",
+    "@angular/compiler": "^4.0.2",
+    "@angular/compiler-cli": "^4.0.2",
+    "@angular/core": "^4.0.2",
+    "@angular/platform-browser": "^4.0.2",
+    "@angular/platform-browser-dynamic": "^4.0.2",
     "@types/core-js": "^0.9.34",
     "@types/jasmine": "^2.2.34",
+    "@types/node": "^4.0.22-alpha",
+    "@types/systemjs": "^0.19.32",
+    "core-js": "^2.4.1",
     "jasmine-core": "^2.5.2",
-    "karma": "^1.3.0",
+    "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-opera-launcher": "^1.0.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-safari-launcher": "^1.0.0",
-    "karma-typescript": "^2.1.4",
+    "karma-typescript": "^3.0.0",
     "reflect-metadata": "^0.1.8",
-    "rxjs": "5.0.0-beta.12",
+    "rxjs": "^5.0.1",
     "traceur": "0.0.111",
     "tslint": "^4.0.2",
     "tslint-eslint-rules": "^3.0.0",
     "tslint-microsoft-contrib": "^2.0.13",
-    "typescript": "^2.0.10",
-    "zone.js": "^0.6.26"
+    "typescript": "^2.2.0",
+    "zone.js": "^0.8.5"
   }
 }

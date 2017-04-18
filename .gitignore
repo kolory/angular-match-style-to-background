@@ -1,18 +1,23 @@
+# System ignores
 .DS_store
 Desktop.ini
 ._*
 Thumbs.db
-node_modules
+
+# Dev ignores
 .idea
-
-/src/index.js
-/src/index.js.map
-/src/index.d.ts
-/src/index.spec.js
-/coverage/
-
-*.js
-*.js.map
-*.d.ts
+node_modules
 npm-debug.log
+
+# Artifacts ignores
+src/*.js
+index.js
+*.map
+*.d.ts
+*.metadata.json
+*.ngfactory.ts
+*.ngsummary.json
+
+# Reports
 /lcov.info
+/coverage/
